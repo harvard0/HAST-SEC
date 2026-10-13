@@ -1,0 +1,20 @@
+import {seriesChart} from './v15_charts.mjs';
+import {tuningPanel} from './v15_tuning.mjs';
+export const states={idle:'待机',chat:'交流',activity:'活动',command:'动作',release:'释放',brief:'短回应',conversation:'持续交流'};
+export {motionName} from './v13_panels.mjs';
+const fields=[['strength','软边界强度','无量纲','偏离可行范围时增大惩罚'],['region_strength','历史区域强度','无量纲','保留真实素材的关节分布'],['physics_strength','动力学权重','无量纲','平衡姿态误差与动力学代理'],['mass_kg','代理质量','千克','用于杆段动力学估计, 未标定'],['friction','摩擦系数','无量纲','约束脚底切向支撑力'],['hand_forward_m','手部前移','米','骨架防穿模修正, 不含衣服'],['playback_torso_forward_degrees','躯干前倾','度','角色整体姿态校准'],['inertia_body','躯干惯性','无量纲','约束躯干非连续变化'],['inertia_arms','手臂惯性','无量纲','抑制异常手臂跳变'],['inertia_details','细节惯性','无量纲','抑制手腕与细节跳变'],['support_tolerance_m','支撑容差','米','重心代理在支撑面外的容差'],['contact_tolerance_m','足部接触容差','米','已接触脚底允许的偏差'],['hips_tilt_degrees','髋部倾角上限','度','约束髋部世界倾斜'],['chest_tilt_degrees','胸部倾角上限','度','约束上半身世界倾斜']];
+const smoothNames={body_hz:'躯干基础截止频率',arms_hz:'手臂基础截止频率',hands_hz:'手腕基础截止频率',details_hz:'细节基础截止频率',root_hz:'根节点基础截止频率',beta:'动态速度增益',arms_beta:'手臂动态速度增益',derivative_hz:'速度估计截止频率',body_max_hz:'躯干最大截止频率',arms_max_hz:'手臂最大截止频率',hands_max_hz:'手腕最大截止频率',details_max_hz:'细节最大截止频率',root_max_hz:'根节点最大截止频率',window_seconds:'幅度估计窗口秒数',minimum_motion_degrees:'最小有效幅度角度',body_motion_degrees:'躯干运动门控角度',arm_motion_degrees:'手臂运动门控角度',detail_motion_degrees:'细节运动门控角度'};
+export function updateTiles(tiles,s,selection){
+ const r=s.last;if(!r)return;tiles.base.textContent=states[selection?.kind]??'准备';tiles.solve.textContent=r.elapsed_ms.toFixed(2)+'毫秒';tiles.cost.textContent=r.final_cost.toFixed(4);tiles.support.textContent=(100*r.support_error_m).toFixed(3)+'厘米';tiles.range.textContent=r.range_error_deg.toFixed(3)+'度 / '+r.bone_error_m.toExponential(1)+'米';
+}
+export function controlTelemetry(view){
+ const panel=document.createElement('section');panel.className='control-analysis';const h=document.createElement('h2');h.textContent='求解优化与控制参数';const note=document.createElement('p');note.textContent='求解20赫兹, 曲线10赫兹采样, 保留15秒. 角速度为19个躯干与四肢关节的平均值. 动力学为未标定杆段代理, 目标值不能当作准确率. 下表为默认配置, 临时调参不写入模型权重.';
+ const metrics=document.createElement('pre'),plots=document.createElement('div');plots.className='series-grid';const draw=[seriesChart(plots,'优化及平滑前后的目标值',[{key:'initial',label:'初始'},{key:'solved',label:'求解后'},{key:'final',label:'平滑后'}],'目标值'),seriesChart(plots,'逆动力学关节力矩代理',[{key:'torque',label:'最大关节力矩'}],'牛米')];
+ const details=document.createElement('details'),summary=document.createElement('summary');summary.textContent='展开控制变量与作用说明';const table=document.createElement('table'),body=document.createElement('tbody');table.append(body);details.append(summary,table);panel.append(h,note,plots,metrics,details);document.querySelector('main>section').append(panel);
+ fetch('/configs/v9_control.json').then(r=>{if(!r.ok)throw Error('控制参数读取失败.');return r.json();}).then(config=>{
+  tuningPanel(panel,view,config);
+  for(const [key,name,unit,meaning]of fields){const row=document.createElement('tr');for(const text of [name,config[key]+' '+unit,meaning]){const cell=document.createElement('td');cell.textContent=text;row.append(cell);}body.append(row);}
+  for(const [key,value]of Object.entries(config.output_smoothing)){const row=document.createElement('tr');for(const text of [smoothNames[key]??'未命名参数',String(value),'求解后自适应阻尼参数']){const cell=document.createElement('td');cell.textContent=text;row.append(cell);}body.append(row);}
+ }).catch(e=>{summary.textContent=e.message;});
+ return {update(s,rows){draw.forEach(d=>d(rows));const r=s?.last;if(!r)return;metrics.textContent='迭代 '+r.iterations+' / 接受步 '+r.accepted+' / 回溯 '+r.backtracks+' / '+r.status+'\n最终可行 '+(r.feasible?'是':'否')+' / 保留帧 '+s.held_frames+' / 拒绝帧 '+s.rejected_frames+'\n平滑可行性回收 '+(100*(r.output_smoothing?.recovery_fraction??0)).toFixed(2)+'% / 摩擦力超限 '+(r.friction_excess_N??0).toFixed(3)+'牛\n身体净距 左 '+(100*(r.left_body_clearance_m??0)).toFixed(2)+' / 右 '+(100*(r.right_body_clearance_m??0)).toFixed(2)+'厘米';},reset(){draw.forEach(d=>d([]));metrics.textContent='等待求解.';}};
+}

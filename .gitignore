@@ -1,0 +1,11 @@
+node_modules/
+Temp/
+runtime/
+local.settings.json
+assets/avatar.vrm
+assets/models/
+.env
+.env.*
+*.log
+*.pid
+*.zip

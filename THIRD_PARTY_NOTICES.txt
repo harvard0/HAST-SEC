@@ -1,0 +1,32 @@
+HAST-SEC v0.1 第三方资源声明
+
+本项目的非商业许可仅约束项目方有权许可的原创部分. 第三方原始许可独立适用.
+
+Three.js: Copyright (c) 2010-2026 three.js authors. MIT.
+https://github.com/mrdoob/three.js
+许可文本: licenses/three.txt.
+
+@pixiv/three-vrm: Copyright (c) pixiv Inc. MIT.
+https://github.com/pixiv/three-vrm
+许可文本: licenses/@pixiv-three-vrm.txt.
+
+Qwen3.5-0.8B: Qwen Team. Apache-2.0.
+https://huggingface.co/Qwen/Qwen3.5-0.8B
+文本量化文件从ggml-org/Qwen3.5-0.8B-GGUF固定版本取得, 不随源码仓库重复分发.
+许可文本: licenses/Qwen-LICENSE.txt.
+
+llama.cpp: Copyright (c) 2023-2026 The ggml authors. MIT.
+https://github.com/ggml-org/llama.cpp
+运行库由安装脚本从官方b11429版本获取, 不随源码仓库分发. CUDA版依赖的NVIDIA运行库遵循NVIDIA条款, 不适用本项目许可证.
+许可文本: licenses/llama-LICENSE.txt.
+
+默认示例角色: VRM1_Constraint_Twist_Sample, (c) 2022 pixiv Inc.
+https://github.com/vrm-c/vrm-specification/tree/master/samples/VRM1_Constraint_Twist_Sample
+VRM Public License 1.0: https://vrm.dev/licenses/1.0/
+内置元数据允许再分发和修改后再分发. 角色仍受该许可的具体使用限制. 用户自行导入角色须遵守该角色自己的许可. 原演示Nayu角色不包含在发布包中.
+
+本版运行资源包含经过重定向和筛选的CMU动作轨迹, 以及BEAT2来源的运动表示和统计模型. 未包含原始视频、音频、SMPL模型或原始NPZ数据.
+CMU: https://mocap.cs.cmu.edu/
+The data used in this project was obtained from mocap.cs.cmu.edu. The database was created with funding from NSF EIA-0196217.
+BEAT2: https://huggingface.co/datasets/H-Liu1997/BEAT2
+作者数据仓库标注Apache-2.0, 相关研究站点同时提出非商业使用要求. 本发行版采用非商业研究范围; 项目商业授权不覆盖这些第三方数据, 有商业需求应另向数据权利人确认授权.

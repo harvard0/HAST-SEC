@@ -1,0 +1,6 @@
+* text=auto eol=lf
+models/** -text
+*.bin -text
+*.vrm -text
+*.png -text
+*.gguf -text

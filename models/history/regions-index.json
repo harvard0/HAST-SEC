@@ -1,0 +1,1 @@
+{"parts":["regions-0.json","regions-1.json","regions-2.json","regions-3.json","regions-4.json","regions-5.json","regions-6.json","regions-7.json","regions-8.json"],"training_only":true,"coverage_quantile":0.995,"minimum_sigma_degrees":5,"root_yaw_excluded":true,"statistically_calibrated_probability":false}

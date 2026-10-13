@@ -1,0 +1,14 @@
+import {copyFile,mkdir,readFile,stat} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import {resolve} from 'node:path';
+const root=fileURLToPath(new URL('../',import.meta.url)),path=process.argv[2];
+if(!path||!(await stat(path)).isFile()||(await stat(path)).size>100*1024**2)throw Error('请指定100MB以内的VRM角色文件.');
+const bytes=await readFile(path);if(bytes.length<20||bytes.readUInt32LE(0)!==0x46546c67||bytes.readUInt32LE(12)>bytes.length-20)throw Error('角色格式无效.');
+const json=JSON.parse(bytes.subarray(20,20+bytes.readUInt32LE(12)).toString('utf8')),v1=json.extensions?.VRMC_vrm,v0=json.extensions?.VRM;
+if(!v1&&!v0)throw Error('文件不包含VRM信息.');
+const bones=v1?v1.humanoid.humanBones:Object.fromEntries(v0.humanoid.humanBones.map(b=>[b.bone,{node:b.node}]));
+const profile=JSON.parse(await readFile(resolve(root,'configs/skeleton_profile.json'),'utf8'));
+if(profile.bone_order.some(name=>!bones[name]))throw Error('角色骨骼不完整, 需包含人形、眼睛和手指骨骼.');
+await mkdir(resolve(root,'assets'),{recursive:true});
+await copyFile(path,resolve(root,'assets/avatar.vrm'));
+console.log('角色已导入本机, 不会加入发布清单. 请遵守角色原始许可.');

@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HAST-SEC v0.1</title><link rel="icon" href="data:,"><link rel="stylesheet" href="/web/v11_lab.css"><script type="importmap">
+{"imports":{"three":"/vendor/three/build/three.module.js","three/addons/":"/vendor/three/examples/jsm/","@pixiv/three-vrm":"/vendor/vrm/three-vrm.module.min.js"}}
+</script><script type="module" src="/web/v15_start.mjs"></script><script type="module" src="/web/v13_lab.mjs"></script></head>
+<body><header><h1>HAST-SEC</h1><p>中文交互 / 连续运动 / 实时稳定优化 / v0.1</p></header>
+<main><section><div id="beat-stage"></div><div class="bar"><button id="play" disabled>开始或继续</button><button id="pause">暂停</button><button id="reset" disabled>重置并暂停</button><button id="front">正面</button><button id="hands">双手近景</button><button id="side">侧面</button></div><p id="control"></p></section>
+<aside><form id="command"><label>与角色聊天<input id="text" maxlength="300" value="你好" autocomplete="off"></label><button id="send" disabled>发送</button><label><input type="checkbox" id="speak">本机语音朗读</label></form><p id="language-ready">中文模型等待加载.</p><p id="status" role="status">正在准备角色.</p><pre id="reply"></pre><pre id="intent"></pre>
+<div hidden><details><summary>运行</summary><pre id="base"></pre><p></p><button id="speech-start">说话开始</button><button id="speech-end">说话结束</button></details><pre id="tracks"></pre><pre id="diagnostics"></pre><pre id="evaluation"></pre><pre id="training"></pre><p></p></div></aside></main></body></html>
