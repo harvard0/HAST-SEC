@@ -2,6 +2,7 @@ import {Quaternion, Euler, MathUtils} from "three";
 import {SPACE} from "./schema.mjs";
 import {validateMotion} from "./validate.mjs";
 import {bindPoseWriter} from "./pose_frame.mjs";
+import {syncAvatar} from "./avatar_sync.mjs";
 
 export class PoseController {
   constructor(vrm, profile) {
@@ -28,9 +29,7 @@ export class PoseController {
     }
   }
   sync() {
-    this.humanoid.update();
-    this.vrm.expressionManager?.update();
-    this.vrm.scene.updateMatrixWorld(true);
+    syncAvatar(this.vrm);
   }
   setRotation(name, angles) {
     this.node(name); this.vector(angles);

@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import {mountCanvas,resizeViewport} from './viewer_layout.mjs';
+import {syncAvatar} from '../motion/avatar_sync.mjs';
 
 export function createViewer(container,{wheelZoom=true}={}) {
   const scene=new THREE.Scene();
@@ -22,8 +23,7 @@ export function createViewer(container,{wheelZoom=true}={}) {
   const yaw=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),Math.PI);
   function render() {
     if (vrm) {
-      vrm.humanoid.update(); vrm.expressionManager?.update();
-      vrm.scene.updateMatrixWorld(true);
+      syncAvatar(vrm);
       const node = vrm.humanoid.getNormalizedBoneNode(selected);
       node.getWorldPosition(axes.position); node.getWorldQuaternion(axes.quaternion);
       if (profile.vrm_version === "0") axes.quaternion.multiply(yaw);
